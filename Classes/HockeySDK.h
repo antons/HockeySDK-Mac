@@ -15,11 +15,6 @@
 
 #import "BITSystemProfile.h"
 
-#import "BITFeedbackManager.h"
-#import "BITFeedbackWindowController.h"
-
-#import "BITMetricsManager.h"
-
 // Notification message which HockeyManager is listening to, to retry requesting updated from the server
 #define BITHockeyNetworkDidBecomeReachableNotification @"BITHockeyNetworkDidBecomeReachable"
 

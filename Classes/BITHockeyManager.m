@@ -3,9 +3,6 @@
 
 #import "BITHockeyBaseManagerPrivate.h"
 #import "BITCrashManagerPrivate.h"
-#import "BITFeedbackManagerPrivate.h"
-#import "BITMetricsManagerPrivate.h"
-#import "BITCategoryContainer.h"
 #import "BITHockeyHelper.h"
 #import "BITHockeyAppClient.h"
 
@@ -20,8 +17,6 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
 
 // Redeclare BITHockeyManager properties with readwrite attribute.
 @property (nonatomic, strong, readwrite) BITCrashManager *crashManager;
-@property (nonatomic, strong, readwrite) BITFeedbackManager *feedbackManager;
-@property (nonatomic, strong, readwrite) BITMetricsManager *metricsManager;
 
 @end
 
@@ -49,8 +44,6 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
     self.hockeyAppClient = nil;
     
     _disableCrashManager = NO;
-    _disableFeedbackManager = NO;
-    _disableMetricsManager = NO;
     
     self.startManagerIsInvoked = NO;
     
@@ -207,23 +200,7 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
     BITHockeyLogDebug(@"INFO: Start CrashManager");
     [self.crashManager startManager];
   }
-  
-  // start FeedbackManager
-  if (![self isFeedbackManagerDisabled]) {
-    BITHockeyLogDebug(@"INFO: Start FeedbackManager");
-    if (self.serverURL) {
-      [self.feedbackManager setServerURL:self.serverURL];
-    }
-    [self.feedbackManager performSelector:@selector(startManager) withObject:nil afterDelay:1.0];
-  }
-  
-  // start MetricsManager
-  if (!self.disableMetricsManager) {
-    BITHockeyLogDebug(@"INFO: Start MetricsManager");
-    [self.metricsManager startManager];
-    [BITCategoryContainer activateCategory];
-  }
-  
+
   NSString *integrationFlowTime = [self integrationFlowTimeString];
   if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
     [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime];
@@ -234,20 +211,6 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
   if (self.validAppIdentifier && !self.startManagerIsInvoked) {
     NSLog(@"[HockeySDK] ERROR: You did not call [[BITHockeyManager sharedHockeyManager] startManager] to startup the HockeySDK! Please do so after setting up all properties. The SDK is NOT running.");
   }
-}
-
-- (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
-  if (self.metricsManager) {
-    self.metricsManager.disabled = disableMetricsManager;
-  }
-  _disableMetricsManager = disableMetricsManager;
-}
-
-- (void)setDisableFeedbackManager:(BOOL)disableFeedbackManager {
-  if (self.feedbackManager) {
-    [self.feedbackManager setDisableFeedbackManager:disableFeedbackManager];
-  }
-  _disableFeedbackManager = disableFeedbackManager;
 }
 
 - (void)setServerURL:(NSString *)aServerURL {
@@ -358,13 +321,6 @@ NSString *const kBITHockeySDKURL = @"https://sdk.hockeyapp.net/";
   if (!self.validAppIdentifier) {
     [self logInvalidIdentifier:@"app identifier"];
     self.disableCrashManager = YES;
-  } else {
-    BITHockeyLogDebug(@"INFO: Setup FeedbackManager");
-    self.feedbackManager = [[BITFeedbackManager alloc] initWithAppIdentifier:self.appIdentifier];
-    
-    BITHockeyLogDebug(@"INFO: Setup MetricsManager");
-    NSString *iKey = bit_appIdentifierToGuid(self.appIdentifier);
-    self.metricsManager = [[BITMetricsManager alloc] initWithAppIdentifier:iKey];
   }
   
   if ([self isCrashManagerDisabled])

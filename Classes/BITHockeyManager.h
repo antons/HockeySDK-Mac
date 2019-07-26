@@ -1,6 +1,4 @@
 @class BITCrashManager;
-@class BITFeedbackManager;
-@class BITMetricsManager;
 @protocol BITHockeyManagerDelegate;
 
 #import "HockeySDK.h"
@@ -158,53 +156,6 @@
  * @see crashManager
  */
 @property (nonatomic, getter = isCrashManagerDisabled) BOOL disableCrashManager;
-
-
-/**
- Reference to the initialized BITFeedbackManager module
- 
- Returns the BITFeedbackManager instance initialized by BITHockeyManager
- 
- @see configureWithIdentifier:delegate:
- @see startManager
- @see disableFeedbackManager
- */
-@property (nonatomic, strong, readonly) BITFeedbackManager *feedbackManager;
-
-
-/**
- Flag the determines whether the Feedback Manager should be disabled
- 
- If this flag is enabled, then letting the user give feedback and
- get responses will be turned off!
- 
- Please note that the Feedback Manager will be initialized anyway!
- 
- *Default*: _NO_
- @see feedbackManager
- */
-@property (nonatomic, getter = isFeedbackManagerDisabled) BOOL disableFeedbackManager;
-
-
-/**
- Reference to the initialized BITMetricsManager module
- 
- Returns the BITMetricsManager instance initialized by BITHockeyManager
- */
-@property (nonatomic, strong, readonly) BITMetricsManager *metricsManager;
-
-/**
- Flag the determines whether the BITMetricsManager should be disabled
- 
- If this flag is enabled, then sending metrics data such as sessions and users
- will be turned off!
- 
- Please note that the BITMetricsManager instance will be initialized anyway!
-  
- *Default*: _NO_
- @see metricsManager
- */
-@property (nonatomic, getter = isMetricsManagerDisabled) BOOL disableMetricsManager;
 
 
 ///-----------------------------------------------------------------------------
